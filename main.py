@@ -15,11 +15,13 @@ def start(bot, update):
     """Send a message when the command /start is issued."""
     update.message.reply_text(f'Здравствуйте уважаемый {update.message.from_user.first_name}')
 
-
+    
 def help(bot, update):
     """Send a message when the command /help is issued."""
     update.message.reply_text('Я ничего не умею и ничем вам не помогу. Лучше вы помогите деньгами.')
 
+def donat(bot, update):
+    update.message.reply_text('Свяжитесь с моим создателем, он вам даст реквизиты для платежа. Минимальная сумма 1000 р.')
 
 def echo(bot, update):
     """Echo the user message."""
@@ -43,6 +45,7 @@ def main():
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
+    dp.add_handler(CommandHandler("donat", donat))
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, echo))
