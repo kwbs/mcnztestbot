@@ -5,6 +5,7 @@ import logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -17,7 +18,7 @@ def start(bot, update):
 
 def help(bot, update):
     """Send a message when the command /help is issued."""
-    update.message.reply_text('Я ничего не умею и ничем вам не помогу. Лучше вы помогите деньгами')
+    update.message.reply_text('Я ничего не умею и ничем вам не помогу. Лучше вы помогите деньгами.')
 
 
 def echo(bot, update):
