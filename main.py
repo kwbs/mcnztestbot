@@ -1,62 +1,82 @@
+from telegram.ext import Updater, CommandHandler, Filters
+from telegram.ext import CallbackQueryHandler, MessageHandler, ConversationHandler, RegexHandler
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
+from odata1cw.core import Infobase
+
+import requests
+import json
 import logging
+import sys
 
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+# # main bot library
+# from botlib import dms_test, getVehicles, menu_actions, locations, inv, error, login
 
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+# from compliance import handler as compliance_handler
 
-logger = logging.getLogger(__name__)
+'''
+Command description for @BotFather
 
+locations - stock balance
+compliance - Sending and receiving from/to compliance 
+login - registration in the system
+inv - location inventory
 
-# Define a few command handlers. These usually take the two arguments bot and
-# update. Error handlers also receive the raised TelegramError object in error.
-def start(update, context):
-    """Send a message when the command /start is issued."""
-    update.message.reply_text('Hi!')
+'''
 
-
-def help(update, context):
-    """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
-
-
-def echo(update, context):
-    """Echo the user message."""
-    update.message.reply_text(update.message.text)
+def hello(bot, update):
+    update.message.reply_text('Hello {}'.format(
+        update.message.from_user.first_name))
 
 
-def error(update, context):
-    """Log Errors caused by Updates."""
-    logger.warning('Update "%s" caused error "%s"', update, context.error)
+def start(bot, update):
+    update.message.reply_text('Hello {}'.format(
+        update.message.from_user.first_name))
+    update.message.reply_text('''
+1) Just type the tail of a vehicle's chassis.
+2) /inv - cars, placed at specified Location
+3) /locations - Locations summury 
+4) /login - To ask permissions. Need once.
+
+Type /start any time to show this help.
+    ''')
 
 
 def main():
-    """Start the bot."""
-    # Create the Updater and pass it your bot's token.
-    # Make sure to set use_context=True to use the new context based callbacks
-    # Post version 12 this will no longer be necessary
-    updater = Updater("777404625:AAGUPZ39KMnELLUO8w2J7Wx0mQZ4u-f4Nhc")
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                        level=logging.INFO)
 
-    # Get the dispatcher to register handlers
+    if(len(sys.argv) != 2):
+        updater = Updater('802189751:AAEhZZ8bZ59nb0BxZNzbFOlTyHiN82PbUAg')  
+
+    elif(sys.argv[1] == 'DEBUG'):
+        updater = Updater(
+            '730634879:AAFnp_yIKcM4eCXFy75XcLSo9IoAWQaFYPU',
+            #request_kwargs={'proxy_url': 'https://54.39.138.146:3128'})
+            request_kwargs={'proxy_url': 'https://51.79.31.19:8080'})
+    elif (sys.argv[1] == 'PROD'):
+        updater = Updater('802189751:AAEhZZ8bZ59nb0BxZNzbFOlTyHiN82PbUAg')
+    elif (sys.argv[1] == 'TEST'):
+        updater = Updater('838750238:AAGysoEUeOL1MHM63pkXJn8Jp7V-g39rkM4')    
+    else:
+        print('Select DEBUG or PROD or TEST arg')
+        return
+
     dp = updater.dispatcher
-
-    # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("help", help))
-
-    # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(MessageHandler(Filters.text, echo))
-
-    # log all errors
-    dp.add_error_handler(error)
-
-    # Start the Bot
+    # TODO need double check about InfoRegisters DMS Statuses
+    # dp.add_handler(compliance_handler())
+    dp.add_handler(CommandHandler('hello', hello))
+    # dp.add_handler(CommandHandler('inv', inv,pass_user_data=True))
+    dp.add_handler(CommandHandler('start', start))
+    # dp.add_handler(CommandHandler('dms_test', dms_test,pass_user_data=True))
+    # dp.add_handler(CommandHandler('locations', locations,pass_user_data=True))
+    # dp.add_handler(CommandHandler('login', login,pass_user_data=True))
+    # dp.add_handler(MessageHandler(Filters.text, getVehicles,pass_user_data=True))
+    # dp.add_handler(CallbackQueryHandler(menu_actions, pass_user_data=True))
+    # dp.add_error_handler(error)
+    print(sys.version)
+    print('''Start polling ()...'.format(sys.argv[1])''')
     updater.start_polling()
-
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
 
