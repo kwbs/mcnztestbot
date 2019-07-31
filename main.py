@@ -47,7 +47,7 @@ def main():
                         level=logging.INFO)
 
     if(len(sys.argv) != 2):
-        updater = Updater('802189751:AAEhZZ8bZ59nb0BxZNzbFOlTyHiN82PbUAg')  
+        updater = Updater('838750238:AAGysoEUeOL1MHM63pkXJn8Jp7V-g39rkM4')  
 
     elif(sys.argv[1] == 'DEBUG'):
         updater = Updater(
